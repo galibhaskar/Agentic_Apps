@@ -12,7 +12,7 @@ load_dotenv()
 def addFile(path:str, filename:str) -> str:
     """Create a new file in the given path"""
 
-    filepath = path + "/" + filename
+    filepath = os.path.join(path, filename)
 
     if not os.path.exists(filepath):
         with open(filepath, 'w') as fp:
@@ -27,7 +27,7 @@ def addFile(path:str, filename:str) -> str:
 def addFolder(path:str, dirname:str) -> str:
     """Create a new directory in the given path"""
 
-    dirpath = path + "/" + dirname
+    dirpath = os.path.join(path, dirname)
     
     if not os.path.exists(dirpath):
         os.mkdir(dirpath)
@@ -37,6 +37,54 @@ def addFolder(path:str, dirname:str) -> str:
     else:
         print(f"Directory already exists")
 
+@tool
+def removeFile(path:str, filename:str) -> str:
+    """Remove a new file in the given path"""
+
+    filepath = os.path.join(path, filename)
+
+    if os.path.exists(filepath):
+        os.remove(filepath)
+
+        print(f"File: {filename} is deleted")
+ 
+    else:
+        print(f"File doesn't exists")
+
+@tool
+def removeFolder(path:str, dirname:str) -> str:
+    """Remove a directory in the given path"""
+
+    dirpath = os.path.join(path, dirname)
+    
+    if os.path.exists(dirpath):
+        os.rmdir(dirpath)
+        
+        print(f"Directory with {dirname} is deleted")
+    
+    else:
+        print(f"Directory doesn't exists")
+
+@tool
+def renameItem(path:str, oldname:str, newname:str) -> str:
+    """Rename a directory in the given path"""
+
+    oldpath = os.path.join(path, oldname)
+
+    newpath = os.path.join(path, newname)
+
+    print("old path:" + oldpath)
+
+    print("new path:" + newpath)
+    
+    if os.path.exists(oldpath):
+        os.rename(oldpath, newpath)
+        
+        print(f"Directory with {oldname} is successfully renamed")
+    
+    else:
+        print(f"Directory doesn't exists")
+
 # ================== Message History ==================
 
 user_conversation_history = [
@@ -45,11 +93,14 @@ user_conversation_history = [
 
 # ================== Agent: LLM + Tools ==================
 
-model = ChatGroq(model='llama-3.3-70b-versatile', max_tokens=100)
+model = ChatGroq(model='llama-3.3-70b-versatile', max_tokens=200, max_retries=2)
 
 agent = create_react_agent(
         model,
-        tools=[addFile, addFolder], 
+        tools=[
+                addFile, addFolder, removeFile, 
+                removeFolder, renameItem
+            ], 
         prompt=None)
 
 # ================== Helper Functions ==================
