@@ -44,7 +44,7 @@ def visualize_graph():
     try:
         img = graph.get_graph().draw_mermaid_png()
 
-        with open("langgraph-demo.png", "wb") as fp:
+        with open("langgraph_demo.png", "wb") as fp:
             fp.write(img)
 
     except Exception:
