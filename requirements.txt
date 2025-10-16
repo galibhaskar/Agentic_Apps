@@ -2,3 +2,5 @@ python-dotenv
 langchain-openai
 langchain-groq
 langgraph
+langchain_mcp_adapters
+langchain_google_genai
