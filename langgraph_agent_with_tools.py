@@ -116,6 +116,17 @@ def displayConversation(conversation):
         
         print(message.content)
 
+# graph visualization
+def visualize_graph():
+    try:
+        img = agent.get_graph().draw_mermaid_png()
+
+        with open("langgraph_with_tools_demo.png", "wb") as fp:
+            fp.write(img)
+
+    except Exception:
+        pass
+
 # ================== User Interface ==================
 
 while True:
@@ -135,3 +146,5 @@ while True:
     user_conversation_history.append(response["messages"][-1])
 
     displayConversation(user_conversation_history)
+
+visualize_graph()
