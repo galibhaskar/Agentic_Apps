@@ -5,6 +5,10 @@ mcp = FastMCP("MyFileSystem")
 
 
 # ================== tools ==================
+
+# make sure your tools return string input 
+# or else LLM retry the action thinking the previous action was failed.
+
 @mcp.tool()
 def addFile(path:str, filename:str) -> str:
     """Create a new file in the given path"""
@@ -15,10 +19,9 @@ def addFile(path:str, filename:str) -> str:
         with open(filepath, 'w') as fp:
             fp.write("New file")
         
-        print(f"File: {filename} is created")
+        return f"File: {filename} is created"
  
-    else:
-        print(f"File already exists")
+    return f"File already exists"
 
 @mcp.tool()
 def addFolder(path:str, dirname:str) -> str:
@@ -29,10 +32,9 @@ def addFolder(path:str, dirname:str) -> str:
     if not os.path.exists(dirpath):
         os.mkdir(dirpath)
         
-        print(f"Directory with {dirname} is created")
+        return f"Directory with {dirname} is created"
     
-    else:
-        print(f"Directory already exists")
+    return f"Directory already exists"
 
 
 if __name__ == "__main__":
