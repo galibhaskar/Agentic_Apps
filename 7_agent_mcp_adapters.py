@@ -21,12 +21,13 @@ GITHUB_TOKEN = os.getenv("GITHUB_ACCESS_TOKEN")
 
 llm_model1 = ChatGroq(
     model="llama-3.3-70b-versatile",
-    # max_tokens=100
+    max_tokens=100,
+    max_retries=2
 )
 
 
 llm_model2 = ChatGoogleGenerativeAI(
-    model="gemini-flash-latest",
+    model="gemini-2.5-pro",
     # max_tokens=100
 )
 
@@ -49,14 +50,38 @@ async def run_agent():
                    "GITHUB_PERSONAL_ACCESS_TOKEN": GITHUB_TOKEN
                },
                "transport": "stdio"
+           },
+            "filesystem": {
+               "command": "npx",
+               "args": [
+                   "-y",
+                   "@modelcontextprotocol/server-filesystem",
+                   "/Users/vg588/Desktop/Gen-AI/lang-chain/simple-chatbot"
+               ],
+               "transport":"stdio"
            }
+            # "github": {
+            #         "command": "docker",
+            #         "args": [
+            #         "run",
+            #         "-i",
+            #         "--rm",
+            #         "-e",
+            #         "GITHUB_PERSONAL_ACCESS_TOKEN",
+            #         "ghcr.io/github/github-mcp-server"
+            #     ],
+            #     "env": {
+            #         "GITHUB_PERSONAL_ACCESS_TOKEN": GITHUB_TOKEN
+            #     }, 
+            #     "transport": 'stdio'
+            # }
         }
     )
 
     tools = await client.get_tools()
 
     agent = create_react_agent(
-        model=llm_model2,
+        model=llm_model1,
         tools=tools
     )
 
@@ -68,10 +93,14 @@ async def run_agent():
         
         query = HumanMessage(user_input)
 
-        # ainvoke: asynchronous invoke
-        response = await agent.ainvoke({
-            "messages": [query]
-        })
+        try:
+            # ainvoke: asynchronous invoke
+            response = await agent.ainvoke({
+                "messages": [query]
+            })
+            
+        except Exception as ex:
+            print(f"Exception: {ex}")
 
         print(extractResponse(response))
 
