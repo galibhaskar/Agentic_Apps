@@ -4,3 +4,4 @@ langchain-groq
 langgraph
 langchain_mcp_adapters
 langchain_google_genai
+streamlit
