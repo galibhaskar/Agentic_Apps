@@ -6,3 +6,6 @@ langchain_mcp_adapters
 langchain_google_genai
 streamlit
 google.genai
+langgraph-store-mongodb
+ollama # for local llm model
+langchain_community 
